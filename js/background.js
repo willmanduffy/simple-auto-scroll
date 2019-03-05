@@ -58,16 +58,6 @@ document.addEventListener('DOMContentLoaded',  function(e) {
   var new_ver = (chrome.extension.getVersion() + "").split(".");
 
   if(old_ver[0]+'.'+old_ver[1]+'.'+old_ver[2] != new_ver[0]+'.'+new_ver[1]+'.'+new_ver[2]){
-    chrome.tabs.query({}, function(tabs) {
-      for (var i = 0, tab; tab = tabs[i]; i++) {
-	var str = tab.url;
-	if (str.match('http://github.com/jpablobr/simple-auto-scroll')) {
-	  chrome.tabs.update(tab.id, {selected: true});
-	  return;
-	}
-      }
-      chrome.tabs.create({url:'http://github.com/jpablobr/simple-auto-scroll'});
-    });
     localStorage["version"] = chrome.extension.getVersion();
   }
 }, false);
@@ -94,7 +84,7 @@ function doScroll(tab, speed, badge) {
 
 function upurl(id){
   chrome.tabs.executeScript({
-    code: `document.documentElement.scrollTop+=1;`
+    code: `if ((pageYOffset + document.documentElement.clientHeight) >= document.documentElement.scrollHeight) { document.documentElement.scrollTop = 0 } else { document.documentElement.scrollTop+=1; }`
   });
 }
 
